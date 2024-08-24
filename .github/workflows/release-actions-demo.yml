@@ -32,11 +32,11 @@ jobs:
 
       - name: Get bump version
         id: bump
-        uses: niwaniwa/version-next@v1.0.1
+        uses: niwaniwa/version-next@67a3d164ad840d17438838865990a2c0e8891d8b
         with:
-          version-input: ${{ steps.version.outputs.value }}
+          version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ github.event.inputs.release_kind }}
 
       ## versionを表示
       - name: Show version
-        run: echo version = ${{ steps.version.outputs.next-version }}
+        run: echo version = ${{ steps.bump.outputs.next-version }}
