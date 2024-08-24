@@ -36,7 +36,7 @@ jobs:
 
       - name: Get bump version
         id: bump
-        uses: niwaniwa/version-next@7e92bb29b7bd3a9c2e7583e3f4c9e059347dff82
+        uses: niwaniwa/version-next@e4ced90692b2a4b1341ed5c2d84dff354dd163d5
         with:
           version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ github.event.inputs.release_kind }}
