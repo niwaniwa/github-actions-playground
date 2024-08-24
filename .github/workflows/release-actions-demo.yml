@@ -45,3 +45,7 @@ jobs:
       - name: Show version
         run: |
           echo version = ${{ steps.bumpup.outputs.next_version }}
+
+      - name: Check GITHUB_OUTPUT
+        run: cat $GITHUB_OUTPUT
+        shell: bash
