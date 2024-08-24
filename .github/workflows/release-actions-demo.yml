@@ -1,0 +1,42 @@
+name: learn-github-actions
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_kind:
+        type: choice
+        description: Release kind
+        default: prerelease
+        required: true
+        options:
+          - none
+          - alpha
+          - beta
+          - rc
+          - release
+
+# for vrchat package
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get package version
+        id: version
+        uses: notiz-dev/github-action-json-property@7c8cf5cc36eb85d8d287a8086a39dac59628eb31
+        with: 
+            path: "package.json"
+            prop_path: "version"
+
+      - name: Get bump version
+        id: bump
+        uses: niwaniwa/version-next@v1.0.1
+        with:
+          version-input: ${{ steps.version.outputs.value }}
+          release-type: ${{ github.event.inputs.release_kind }}
+
+      ## versionを表示
+      - name: Show version
+        run: echo version = ${{ steps.version.outputs.next-version }}
