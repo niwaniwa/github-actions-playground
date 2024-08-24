@@ -39,7 +39,7 @@ jobs:
         uses: niwaniwa/version-next@73f3cf286256cd3aec14a0b1715f91e2df5860e1
         with:
           version-input: ${{ steps.version.outputs.prop }}
-          release-type: beta #${{ github.event.inputs.release_kind }}
+          release-type: ${{ github.event.inputs.release_kind }}
 
       ## versionを表示
       - name: Show version
