@@ -6,7 +6,7 @@ on:
       release_kind:
         type: choice
         description: Release kind
-        default: prerelease
+        default: none
         required: true
         options:
           - none
@@ -30,9 +30,13 @@ jobs:
             path: "package.json"
             prop_path: "version"
 
+      ## versionを表示
+      - name: Show kind
+        run: echo type = ${{ github.event.inputs.release_kind }}
+
       - name: Get bump version
         id: bump
-        uses: niwaniwa/version-next@67a3d164ad840d17438838865990a2c0e8891d8b
+        uses: niwaniwa/version-next@7e92bb29b7bd3a9c2e7583e3f4c9e059347dff82
         with:
           version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ github.event.inputs.release_kind }}
