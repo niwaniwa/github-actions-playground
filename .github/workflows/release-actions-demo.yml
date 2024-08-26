@@ -70,6 +70,9 @@ jobs:
           version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ env.RELEASE_KIND }}
 
+      - name: Set next version
+        run: jq --arg new_version "${{ steps.bumpup.outputs.next_version }}" '.version = $new_version' package.json > package.tmp && mv package.tmp package.json
+
       - name: Show version
         run: |
           echo version = ${{ steps.bumpup.outputs.next_version }}
@@ -132,11 +135,18 @@ jobs:
           gh release create "v${{ steps.version.outputs.prop }}" \
             -F "$RELEASE_NOTE" \
             ${{ fromJSON(env.PRERELEASE) && '--prerelease' || '' }}
-            
+
+      - name: prepare next release version
+        if: inputs.publish && !fromJSON(env.PRERELEASE)
+        id: get-release-version
+        uses: niwaniwa/version-next@v1.0.2
+        with:
+          version-input: ${{ steps.bumpup.outputs.next_version }}
+          release-type: beta
 
       - name: prepare next release & push
         if: inputs.publish && !fromJSON(env.PRERELEASE)
         run: |
-          jq --arg new_version "${{ steps.bumpup.outputs.next_version }}" '.version = $new_version' package.json > package.tmp && mv package.tmp package.json
-          git commit -am "chore: prepare for next version: ${{ steps.bumpup.outputs.next_version }}"
+          jq --arg new_version "${{ steps.get-release-version.outputs.next_version }}" '.version = $new_version' package.json > package.tmp && mv package.tmp package.json
+          git commit -am "chore: prepare for next version: ${{ steps.get-release-version.outputs.next_version }}"
           git push && git push --tags
