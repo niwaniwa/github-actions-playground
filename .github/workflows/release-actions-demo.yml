@@ -29,6 +29,7 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
       - uses: actions/checkout@v4
+      - uses: snow-actions/git-config-user@v1.0.0
 
       - name: Get package version
         id: version
