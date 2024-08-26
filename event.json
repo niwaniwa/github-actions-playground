@@ -1,8 +1,6 @@
 {
-  "workflow_dispatch": {
-    "inputs": {
-      "release_kind": "beta"
-    }
+  "inputs": {
+    "release_kind": "prerelease"
   }
 }
   

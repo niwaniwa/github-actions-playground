@@ -38,7 +38,7 @@ jobs:
 
       - name: Setup release kind
         run: |
-          case "$RELEASE_KIND_IN" in
+          case "${{ github.event.inputs.release_kind }}" in
             "prerelease" )
               echo "RELEASE_KIND=beta" >> $GITHUB_ENV 
               echo "PRERELEASE=true" >> $GITHUB_ENV 
@@ -52,7 +52,7 @@ jobs:
               echo "PRERELEASE=false" >> $GITHUB_ENV 
               ;;
             * )
-              echo "invalid release kind: $RELEASE_KIND_IN"
+              echo "invalid release kind: ${{ github.event.inputs.release_kind }}"
               exit 255
               ;;
           esac
