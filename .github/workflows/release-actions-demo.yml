@@ -114,3 +114,28 @@ jobs:
         run: |
           git commit -am "chore: bump version to $VERSION"
           git tag "v$VERSION"
+
+      - name: Publish Release
+        if: ${{ inputs.publish }}
+        run: |
+          git push && git push origin "v$VERSION"
+
+      - name: Publish release to github
+        if: ${{ inputs.publish }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_NOTE: ${{ steps.changelog.outputs.release-note }}
+        shell: bash
+        run: |
+          sleep 1
+
+          gh release create "v$VERSION" \
+            -F "$RELEASE_NOTE" \
+            ${{ fromJSON(env.PRERELEASE) && '--prerelease' || '' }}
+            
+
+      - name: prepare next release & push
+        if: inputs.publish && !fromJSON(env.PRERELEASE)
+        run: |
+          git commit -am "chore: prepare for next version: ${{ steps.bumpup.outputs.next_version }}"
+          git push && git push --tags
