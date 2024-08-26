@@ -9,11 +9,13 @@ on:
         default: none
         required: true
         options:
-          - none
-          - alpha
-          - beta
-          - rc
-          - release
+          - prerelease
+          - start-rc
+          - stable
+      publish:
+        description: "publish release"
+        type: boolean
+        required: false
 
 # for vrchat package
 jobs:
@@ -30,22 +32,79 @@ jobs:
             path: "package.json"
             prop_path: "version"
 
-      ## versionを表示
+
       - name: Show kind
         run: echo type = ${{ github.event.inputs.release_kind }}
+
+      - name: Setup release kind
+        run: |
+          case "$RELEASE_KIND_IN" in
+            "prerelease" )
+              echo "RELEASE_KIND=beta" >> $GITHUB_ENV 
+              echo "PRERELEASE=true" >> $GITHUB_ENV 
+              ;;
+            "start-rc" )
+              echo "RELEASE_KIND=rc" >> $GITHUB_ENV 
+              echo "PRERELEASE=true" >> $GITHUB_ENV 
+              ;;
+            "stable" )
+              echo "RELEASE_KIND=none" >> $GITHUB_ENV 
+              echo "PRERELEASE=false" >> $GITHUB_ENV 
+              ;;
+            * )
+              echo "invalid release kind: $RELEASE_KIND_IN"
+              exit 255
+              ;;
+          esac
 
       - name: Get bump version
         id: bumpup
         uses: niwaniwa/version-next@v1.0.2
         with:
           version-input: ${{ steps.version.outputs.prop }}
-          release-type: ${{ github.event.inputs.release_kind }}
+          release-type: ${{ env.RELEASE_KIND }}
 
-      ## versionを表示
       - name: Show version
         run: |
           echo version = ${{ steps.bumpup.outputs.next_version }}
 
-      - name: Check GITHUB_OUTPUT
-        run: cat $GITHUB_ENV
-        shell: bash
+      - id: changelog
+        uses: niwaniwa/sh-actions/changelog/prepare-release@master
+        with:
+            version: ${{ steps.version.outputs.prop }}
+            prerelease: ${{ env.PRERELEASE }}
+            tag-prefix: v
+            prerelease-note-heading: |
+                Version ${{ steps.version.outputs.prop }}
+                ---
+
+                **This is SNAPSHOT, not a stable release. make sure this may have many bugs.**
+            release-note-heading: |
+                Version ${{ steps.version.outputs.prop }}
+                ---
+      - name: Upload CHANGELOG.md
+        if: ${{ !fromJSON(env.PRERELEASE) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHANGELOG
+          path: CHANGELOG.md
+      - name: Upload CHANGELOG-PRERELEASE.md
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHANGELOG-PRERELEASE
+          path: CHANGELOG-PRERELEASE.md
+
+      - run: cp "${{ steps.changelog.outputs.release-note }}" release-note.md
+
+      - name: Upload release note
+        uses: actions/upload-artifact@v3
+        with:
+          name: changelog
+          path: release-note.md
+      - run: rm release-note.md
+
+      # - name: Commit & tag version
+      #   if: ${{ inputs.publish }}
+      #   run: |
+      #     git commit -am "chore: bump version to $VERSION"
+      #     git tag "v$VERSION"
