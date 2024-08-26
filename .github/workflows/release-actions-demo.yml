@@ -36,7 +36,7 @@ jobs:
 
       - name: Get bump version
         id: bumpup
-        uses: niwaniwa/version-next@5c97fc2f462c45bbbee113b9e2fee3b6ea14e9d2
+        uses: niwaniwa/version-next@112dbd6b419adae3e8b982fb56f7b1a2e6707424
         with:
           version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ github.event.inputs.release_kind }}
@@ -47,5 +47,5 @@ jobs:
           echo version = ${{ steps.bumpup.outputs.next_version }}
 
       - name: Check GITHUB_OUTPUT
-        run: cat $GITHUB_OUTPUT
+        run: cat $GITHUB_ENV
         shell: bash
