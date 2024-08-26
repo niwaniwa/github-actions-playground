@@ -44,7 +44,7 @@ jobs:
       ## versionを表示
       - name: Show version
         run: |
-          echo version = ${{ steps.bumpup.outputs.next_version }}
+          echo version = ${{ env.next_version }}
 
       - name: Check GITHUB_OUTPUT
         run: cat $GITHUB_ENV
