@@ -36,10 +36,10 @@ jobs:
 
       - name: Get bump version
         id: bumpup
-        uses: niwaniwa/version-next@fix/action-yml
+        uses: niwaniwa/version-next@v1.0.2
         with:
           version-input: ${{ steps.version.outputs.prop }}
-          release-type: beta #${{ github.event.inputs.release_kind }}
+          release-type: ${{ github.event.inputs.release_kind }}
 
       ## versionを表示
       - name: Show version
