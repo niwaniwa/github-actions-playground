@@ -65,7 +65,7 @@ jobs:
 
       - name: Get bump version
         id: bumpup
-        uses: niwaniwa/version-next@v1.0.2
+        uses: niwaniwa/version-next@v1.0.3
         with:
           version-input: ${{ steps.version.outputs.prop }}
           release-type: ${{ env.RELEASE_KIND }}
