@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- update actions version
 
 ### Deprecated
 
@@ -18,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## [0.0.1] - 2024-08-29
+### Changed
+- update actions version
 
 ## [0.0.1-rc.2] - 2024-08-29
 
