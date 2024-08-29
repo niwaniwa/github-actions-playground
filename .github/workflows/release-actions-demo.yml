@@ -139,7 +139,7 @@ jobs:
       - name: prepare next release version
         if: inputs.publish && !fromJSON(env.PRERELEASE)
         id: get-release-version
-        uses: niwaniwa/version-next@v1.0.2
+        uses: niwaniwa/version-next@v1.0.4
         with:
           version-input: ${{ steps.bumpup.outputs.next_version }}
           release-type: beta
