@@ -1,7 +1,7 @@
 {
   "name": "la.niri.videoplayer",
   "displayName": "KineL Video Player",
-  "version": "0.0.3-beta.1",
+  "version": "0.0.3",
   "description": "Video Player for VRChat",
   "gitDependencies": {},
   "vpmDependencies": {
